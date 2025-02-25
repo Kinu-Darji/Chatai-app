@@ -1,23 +1,36 @@
-import logo from './logo.svg';
 import './App.css';
+import React from 'react';
+import Leftsection from './components/Leftsection';
+import Rightsection from './components/Rightsection';
 
 function App() {
+  // const[message,setAllMessages]=useState([]);
+  // const [history,setHistory]=useState();
+
+  // const handleNewChat=()=>{
+  //   if(message.length>0){
+  //     const lastChat={id:Date.now(),title:message[0].content,message};
+  //     setHistory([lastChat,...history])
+  //   }
+  //   setAllMessages([]);
+  // }
+
+  // const handleLoadCheat=(chatId)=>{
+  //   const selectedChat = history.find((chat) => chat.id === chatId);
+  //   if (selectedChat) {
+  //     setAllMessages(selectedChat.messages);
+  //   }
+  // }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='mainpage'>
+      <div className='left'>
+        {/* <Leftsection history={history} onNewChat={handleNewChat} onLoadChat={handleLoadCheat}/> */}
+        <Leftsection />
+      </div>
+      <div className='right'>
+        {/* <Rightsection message={message} setAllMessages={setAllMessages}/> */}
+        <Rightsection />
+      </div>
     </div>
   );
 }
