@@ -1,7 +1,7 @@
 import React, { createContext, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import { addMessageToChat } from "../redux/chatSlice";
+import { addMessageToChat, deleteChat } from "../redux/chatSlice";
 
 export const chatContext = createContext(); 
 
@@ -12,16 +12,30 @@ const ContextProvider = ({ children }) => {
   const activeChatId = useSelector((state) => state.chat.activeChatId);
   const [message, setMessage] = useState("");
   const [disable, setDisable] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [chatDelete, setChatDelete] = useState(null);
+
+  const handleClickDelete = (chatId) => {
+    setChatDelete(chatId);
+    setShowAlert(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (chatDelete) {
+      dispatch(deleteChat(chatDelete));
+    }
+    setShowAlert(false);
+  };
 
   async function generateAnswer() {
     if (!message.trim()) return;
   
     setDisable(true);
-    const userMessage = { sender: "You", message };
     setMessage("");
-  
+
     try {
-      const response = await axios.post(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
+      const response = await axios.post(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
         { contents: [{ parts: [{ text: message }] }] }
       );
 
@@ -30,16 +44,11 @@ const ContextProvider = ({ children }) => {
         aiText = response.data.candidates[0].content.parts[0].text || aiText;
       }
   
-     
       let formattedText = aiText
-      .replace(/\n/g, "<br>")
-      .replace(/\*\*(.*?)\*\*/g,"<b><strong>$1</strong></b>")
-      .replace(/\*/g,"&bull;");
+        .replace(/\n/g, "<br>")
+        .replace(/\*\*(.*?)\*\*/g, "<b><strong>$1</strong></b>")
+        .replace(/\*/g, "&bull;");
 
-     
-  
-      const aiMessage = { sender: "AI", message: formattedText };
-  
       dispatch(addMessageToChat({ chatId: activeChatId, message: formattedText, sender: "AI" }));
   
     } catch (error) {
@@ -48,10 +57,13 @@ const ContextProvider = ({ children }) => {
   
     setDisable(false);
   }
-  
 
   return (
-    <chatContext.Provider value={{ message, setMessage, disable, generateAnswer }}>
+    <chatContext.Provider value={{ 
+      message, setMessage, disable, generateAnswer,
+      chatDelete, setChatDelete, showAlert, setShowAlert,
+      handleClickDelete, handleConfirmDelete 
+    }}>
       {children}
     </chatContext.Provider>
   );

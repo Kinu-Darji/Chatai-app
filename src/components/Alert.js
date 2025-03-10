@@ -1,9 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef ,useContext} from "react";
+import { chatContext } from "../context/Context";
 import "../styles/Alertbox.css";
 
 const Alert = ({ onConfirm, onCancel }) => {
   const dialogRef = useRef(null);
-  //  const [showAlert, setShowAlert] = useState(false);
+  const {setShowAlert}=useContext(chatContext);
+
   useEffect(() => {
     if (dialogRef.current) {
       dialogRef.current.showModal();
@@ -15,6 +17,7 @@ const Alert = ({ onConfirm, onCancel }) => {
       className="overallalert"
       onClick={() => {
         dialogRef.current.close();
+        setShowAlert(false)
       }}
     >
       <dialog className="alert" ref={dialogRef} >

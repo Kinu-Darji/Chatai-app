@@ -1,6 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useContext } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setActiveChat, addChat, deleteChat } from "../redux/chatSlice";
+import { setActiveChat, addChat } from "../redux/chatSlice";
+import { chatContext } from "../context/Context";
 import user_logo from "../assets/user_logo.jpg";
 import "../styles/Leftsection.css";
 import Alert from "./Alert";
@@ -8,25 +9,8 @@ import Alert from "./Alert";
 const Leftsection = () => {
   const dispatch = useDispatch();
   const chats = useSelector((state) => state.chat.chats);
-
-  const [showAlert, setShowAlert] = useState(false);
-  const [chatDelete, setChatDelete] = useState(null);
-
+  const {showAlert,setShowAlert,handleClickDelete,handleConfirmDelete}=useContext(chatContext);
   const alertRef = useRef(null);
-
-  const handleClickDelete = (chatId) => {
-    setChatDelete(chatId);
-    setShowAlert(true);
-  };
-
-  const handleConfirmDelete = () => {
-    if (chatDelete) {
-      dispatch(deleteChat(chatDelete));
-    }
-    setShowAlert(false);
-  };
-
-  //setShowAlert(false);
 
   return (
     <div className="leftsection">
